@@ -1415,7 +1415,6 @@ size_t AudioHardwareALSA::getInputBufferSize(uint32_t sampleRate, int format, in
     } else {
         ALOGE("getInputBufferSize bad format: %d", format);
     }
-    bufferSize = MIN_CAPTURE_BUFFER_SIZE_PER_CH; /* qcom blob limitation */
     return bufferSize;
 }
 

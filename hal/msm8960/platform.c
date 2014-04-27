@@ -68,10 +68,10 @@ typedef int (*csd_client_init_t)();
 typedef int (*csd_client_deinit_t)();
 typedef int (*csd_disable_device_t)();
 typedef int (*csd_enable_device_t)(int, int, uint32_t);
-typedef int (*csd_volume_t)(int);
-typedef int (*csd_mic_mute_t)(int);
-typedef int (*csd_start_voice_t)();
-typedef int (*csd_stop_voice_t)();
+typedef int (*csd_volume_t)(uint32_t, int);
+typedef int (*csd_mic_mute_t)(uint32_t, int);
+typedef int (*csd_start_voice_t)(uint32_t);
+typedef int (*csd_stop_voice_t)(uint32_t);
 
 
 /* Audio calibration related functions */
@@ -484,7 +484,7 @@ int platform_start_voice_call(void *platform)
             ALOGE("dlsym error for csd_client_start_voice");
             ret = -ENOSYS;
         } else {
-            ret = my_data->csd_start_voice();
+            ret = my_data->csd_start_voice(VOICE_VSID);
             if (ret < 0) {
                 ALOGE("%s: csd_start_voice error %d\n", __func__, ret);
             }
@@ -503,7 +503,7 @@ int platform_stop_voice_call(void *platform)
         if (my_data->csd_stop_voice == NULL) {
             ALOGE("dlsym error for csd_stop_voice");
         } else {
-            ret = my_data->csd_stop_voice();
+            ret = my_data->csd_stop_voice(VOICE_VSID);
             if (ret < 0) {
                 ALOGE("%s: csd_stop_voice error %d\n", __func__, ret);
             }
@@ -522,7 +522,7 @@ int platform_set_voice_volume(void *platform, int volume)
         if (my_data->csd_volume == NULL) {
             ALOGE("%s: dlsym error for csd_volume", __func__);
         } else {
-            ret = my_data->csd_volume(volume);
+            ret = my_data->csd_volume(VOICE_VSID, volume);
             if (ret < 0) {
                 ALOGE("%s: csd_volume error %d", __func__, ret);
             }
@@ -544,7 +544,7 @@ int platform_set_mic_mute(void *platform, bool state)
             if (my_data->csd_mic_mute == NULL) {
                 ALOGE("%s: dlsym error for csd_mic_mute", __func__);
             } else {
-                ret = my_data->csd_mic_mute(state);
+                ret = my_data->csd_mic_mute(VOICE_VSID, state);
                 if (ret < 0) {
                     ALOGE("%s: csd_mic_mute error %d", __func__, ret);
                 }
